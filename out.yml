@@ -16,3 +16,9 @@ Resources:
       - AWSLambda_ReadOnlyAccess
       - AWSXrayWriteOnlyAccess
       Tracing: Active
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /aws/lambda/function
+      RetentionInDays: 14
