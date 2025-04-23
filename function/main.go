@@ -3,16 +3,25 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"log"
+	"os"
+
 	"github.com/aws/aws-lambda-go/events"
 	runtime "github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-lambda-go/lambdacontext"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/lambda"
-	"log"
-	"os"
 )
 
-var client = lambda.New(session.New())
+var client *lambda.Lambda
+
+func initialize() {
+	sess, err := session.NewSession()
+	if err != nil {
+		log.Fatalf("Failed to create AWS session: %v", err)
+	}
+	client = lambda.New(sess)
+}
 
 func callLambda() (string, error) {
 	input := &lambda.GetAccountSettingsInput{}
@@ -49,5 +58,6 @@ func handleRequest(ctx context.Context, event events.SQSEvent) (string, error) {
 }
 
 func main() {
+	initialize()
 	runtime.Start(handleRequest)
 }
